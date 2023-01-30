@@ -23,16 +23,19 @@
                                 <td>Served By</td>
                                 <td>Action</td>
                             </thead>
+                            @foreach ($transaksi as $item)
                             <tr>
-                                <td>1</td>
-                                <td>10-01-23</td>
-                                <td>150.000</td>
-                                <td>200.000</td>
-                                <td>Raflay</td>
+                                <td>{{ $loop->iteration }}</td>
+                                <td>{{ $item->created_at}}</td>
+                                <td>{{ $item->total }}</td>
+                                <td>{{ $item->pay_total }}</td>
+                                <td>{{ $item->user->name }}</td>
                                 <td>
-                                    <button type="submit" class="btn btn-sm btn-warning">Details</button>
+                                    <a href="{{ route('transaction.show', $item->id) }}" type="submit" class="btn btn-sm btn-warning">Details</a>
                                 </td>
                             </tr>
+                            @endforeach
+                            
                         </table>
                     </div>
                 </div>

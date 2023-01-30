@@ -38,6 +38,7 @@
                         </div>
                     </div>
                 </div>
+                <a href="{{ route('item.index')}}" class="btn btn-sm btn-warning" style="margin-top: 20px">Items</a>
             </div>
 
             <div class="col-md-4">

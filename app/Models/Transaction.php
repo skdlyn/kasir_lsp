@@ -11,8 +11,10 @@ class Transaction extends Model
 
     protected $guarded = [];
 
+    protected $table = 'transactions';
+
     public function detail(){
-        return $this->hasMany(TransactionDetail::class);
+        return $this->hasMany(TransactionDetail::class, 'transactions_id');
     }
 
     public function user(){

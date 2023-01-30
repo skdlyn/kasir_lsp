@@ -80,19 +80,26 @@
                                         <td>{{ $loop->iteration }}</td>
                                         <td>{{ $cart->name }}</td>
                                         <td>
-                                            <form action="{{ route('transaction.update', $cart->cart->id)}}" method="POST">
+                                            <form action="{{ route('transaction.update', $cart->cart->id) }}"
+                                                method="POST">
                                                 @csrf
                                                 @method('PUT')
-                                                <input type="number" class="form-control" min="0" max="{{ $cart->stock - $cart->cart->qty }}" name="qty" onchange="update{{ $loop->iteration }}()" value="{{ $cart->cart->qty }}">
+                                                <input type="number" class="form-control" min="1"
+                                                    max="{{ $cart->stock + $cart->cart->qty }}" name="qty"
+                                                    onchange="update{{ $loop->iteration }}()"
+                                                    value="{{ $cart->cart->qty }}">
                                         </td>
                                         <td>{{ $cart->price * $cart->cart->qty }}</td>
                                         <td>
-                                            <input type="submit" class="btn btn-sm btn-primary" id="ubah{{ $loop->iteration }}" style="display: none" value="Update">
+                                            <input type="submit" class="btn btn-sm btn-primary"
+                                                id="ubah{{ $loop->iteration }}" style="display: none" value="Update">
                                             </form>
-                                            <form action="{{ route('transaction.destroy',  $cart->cart->id) }}" method="POST" class="action">
+                                            <form action="{{ route('transaction.destroy', $cart->cart->id) }}"
+                                                method="POST" class="action">
                                                 @csrf
                                                 @method('DELETE')
-                                                <input type="submit" class="btn btn-sm btn-danger" id="hapus{{ $loop->iteration }}" style="display: " value="Hapus">
+                                                <input type="submit" class="btn btn-sm btn-danger"
+                                                    id="hapus{{ $loop->iteration }}" style="display: " value="Hapus">
                                             </form>
                                             <script>
                                                 function update{{ $loop->iteration }}() {
@@ -105,22 +112,27 @@
                                 @endforeach
                             @endif
 
-                            <form action="">
+                            <form action="{{ route('transaction.checkout') }}" method="POST">
+                                @csrf
+                                <input type="hidden" value="{{ Auth::user()->id }}" name="user_id"></input>
                                 <tr>
                                     <td colspan="3" class="text-end">Total</td>
-                                    <td colspan="2"><input type="number" class="form-control" value="10000" disabled
-                                            name="total" id=""></td>
+                                    <td colspan="2"><input type="number" class="form-control"
+                                            value="{{ $carts->sum(function ($item) {return $item->price * $item->cart->qty;}) }}"
+                                            readonly name="total" id=""></td>
                                 </tr>
                                 <tr>
                                     <td colspan="3" class="text-end">Payment</td>
-                                    <td colspan="2"><input type="number" class="form-control" name="payment"
-                                            id=""></td>
+                                    <td colspan="2"><input type="number" class="form-control" name="pay_total"
+                                            id=""
+                                            min="{{ $carts->sum(function ($item) {return $item->price * $item->cart->qty;}) }}"
+                                            required></td>
                                 </tr>
-                                <tr>
+                                {{-- <tr>
                                     <td colspan="3" class="text-end">Change</td>
                                     <td colspan="2"><input type="number" class="form-control" disabled name="change"
                                             id=""></td>
-                                </tr>
+                                </tr> --}}
                         </table>
                         <button type="submit" class="btn btn-sm btn-primary text-light">Checkout</button>
                         <input type="reset" class="btn btn-sm btn-danger text-light" value="Cancel">

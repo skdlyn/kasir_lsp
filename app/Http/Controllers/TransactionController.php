@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Cart;
 use App\Models\Item;
+use App\Models\Transaction;
+use App\Models\TransactionDetail;
 use GuzzleHttp\Promise\Create;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
@@ -16,6 +18,11 @@ class TransactionController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
+
     public function index()
     {
         $items = Item::doesnthave('cart')->where('stock', '>', 0)->get();
@@ -33,6 +40,21 @@ class TransactionController extends Controller
         //
     }
 
+    public function checkout(request $request)
+    {
+        Transaction::create($request->all());
+        foreach(Cart::all() as $item){
+            TransactionDetail::create([
+                'transactions_id' => Transaction::latest()->first()->id,
+                'item_id'        => $item->item_id,
+                'qty'            => $item->qty,
+                'subtotal'       => $item->item->price*$item->qty
+            ]);
+        }
+        Cart::truncate();
+
+        return redirect(route('transaction.show', Transaction::latest()->first()->id));
+    }
     /**
      * Store a newly created resource in storage.
      *
@@ -54,7 +76,11 @@ class TransactionController extends Controller
      */
     public function show($id)
     {
-        return view('detailtransaction');
+        $transaction = Transaction::findorfail($id);
+
+        // return $transaction;
+
+        return view('detailtransaction', compact('transaction'));
     }
 
     /**
@@ -99,6 +125,7 @@ class TransactionController extends Controller
 
     public function history()
     {
-        return view('history');
+        $transaksi = Transaction::all();
+        return view('history', compact('transaksi'));
     }
 }

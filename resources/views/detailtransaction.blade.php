@@ -4,6 +4,7 @@
     <div class="container">
         <div class="row justify-content-center">
             <div class="col-md-12">
+                <a href="{{ route('item.index')}}" class="btn btn-sm btn-warning" style="margin-bottom: 20px">Home</a>
                 <div class="card">
                     <div class="card-header bg-warning">{{ __('Detail Transaction') }}</div>
 
@@ -14,12 +15,13 @@
                             </div>
                         @endif
 
+
                         <table class="table">
                             <tr>
-                                <td class="col-md-2">Date : 10-01-23</td>
+                                <td class="col-md-2">Date : {{ $transaction->created_at }}</td>
                             </tr>
                             <tr>
-                                <td class="col-md-2">Served By : Raflay</td>
+                                <td class="col-md-2">Served By : {{ $transaction->user->name }}</td>
                             </tr>
                         </table>
 
@@ -31,24 +33,26 @@
                                 <td>Price</td>
                                 <td>Subtotal</td>
                             </thead>
+                            @foreach ($transaction->detail as $item)
                             <tr>
-                                <td>1</td>
-                                <td>Nasi Goreng</td>
-                                <td>3</td>
-                                <td>200.000</td>
-                                <td>200.000</td>
+                                <td>{{ $loop->iteration }}</td>
+                                <td>{{ $item->name }}</td>
+                                <td>{{ $item->qty }}</td>
+                                <td>{{ $item->item->price}}</td>
+                                <td>{{ $item->item->price * $item->qty }}</td>
                             </tr>
+                            @endforeach
                             <tr>
                                 <td class="text-end" colspan="4">Grand Total</td>
-                                <td>200000</td>
+                                <td>{{ $transaction->total }}</td>
                             </tr>
                             <tr>
                                 <td class="text-end" colspan="4">Pay Total</td>
-                                <td>200000</td>
+                                <td>{{ $transaction->pay_total}}</td>
                             </tr>
                             <tr>
                                 <td class="text-end" colspan="4">Change</td>
-                                <td>0</td>
+                                <td>{{ $transaction->pay_total - $transaction->total }}</td>
                             </tr>
                         </table>
                     </div>

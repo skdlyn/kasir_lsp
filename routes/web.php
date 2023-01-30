@@ -29,4 +29,5 @@ Route::get('category/{id}/hapus', [CategoryController::class, 'hapus'])->name('c
 Route::resource('item', ItemController::class); 
 Route::get('item/{id}/hapus', [ItemController::class, 'hapus'])->name('item.hapus'); 
 Route::resource('transaction', TransactionController::class); 
+Route::post('transaction/checkout', [TransactionController::class, 'checkout'])->name('transaction.checkout'); 
 Route::get('history', [TransactionController::class, 'history'])->name('history'); 

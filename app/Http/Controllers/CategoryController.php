@@ -13,6 +13,11 @@ class CategoryController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
+
     public function index()
     {
         $categories = Category::paginate(5);
@@ -40,13 +45,12 @@ class CategoryController extends Controller
         {
             $message = [
                 'required' => ':attribute Must be Filled',
-                'min' => ':attribute Min :min Character',
                 'max' => 'attribute Max :max Character',
                 'numeric' => ':attribute Must be Numbers',
             ];
     
             $this->validate($request, [
-                'name' => 'required|min:4|max:30',
+                'name' => 'required|max:30',
             ], $message);
 
         Category::create([
@@ -102,7 +106,7 @@ class CategoryController extends Controller
         ];
 
         $this->validate($request, [
-            'name' => 'required|min:7|max:30',
+            'name' => 'required|max:30',
         ], $message);
 
         $name = Category::find($id);

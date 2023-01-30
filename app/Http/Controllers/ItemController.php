@@ -15,6 +15,11 @@ class ItemController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
+
     public function index()
     {
         $items = Item::paginate(7);
@@ -49,7 +54,7 @@ class ItemController extends Controller
 
         $this->validate($request, [
             'category_id' => 'required',
-            'name' => 'required|min:4|max:30',
+            'name' => 'required|max:30',
             'price' => 'required|numeric',
             'stock' => 'required',
         ], $message);
@@ -107,7 +112,7 @@ class ItemController extends Controller
 
         $this->validate($request, [
             'category_id' => 'required',
-            'name' => 'required|min:7|max:30',
+            'name' => 'required|max:30',
             'price' => 'required|numeric',
             'stock' => 'required',
         ], $message);
@@ -120,6 +125,7 @@ class ItemController extends Controller
         $item->stock = $request->stock;
 
         $item->save();
+        Session::flash('edit', 'Item Edit Success');
         return redirect('/item');
     }
 
